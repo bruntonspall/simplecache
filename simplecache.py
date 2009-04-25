@@ -54,11 +54,10 @@ class LFU:
             self._link(1, key, value)
 
     def evict(self, cache):
-        keys = self.ft.keys()
-        keys.sort()
-        if len(keys) > 0:
-            key = self._unlink(keys[0])
-            cache._remove(key)
+        for f in self.ft:
+            if len(self.ft[f]) > 0:
+                key = self._unlink(f)
+                return cache._remove(key)
 
 class UnboundedCache:
     """ An unbounded cache that will grow forever """
