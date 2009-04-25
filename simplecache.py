@@ -85,10 +85,10 @@ class MaxSizeCache:
             return self.cache[key]
         return None
     def put(self, key, value):
+        if len(self.cache) == self.maxsize:
+            self.algorithm.evict(self)
         self.algorithm.register_put(key, value)
         self.cache[key] = value
-        if len(self.cache) > self.maxsize:
-            self.algorithm.evict(self)
     def _remove(self, key):
         del self.cache[key]
 

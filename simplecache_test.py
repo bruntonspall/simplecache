@@ -68,6 +68,21 @@ class TestBoundCacheWithLFUAlgorithm(unittest.TestCase):
         self.assertEquals('C', cache.cache.get('C'))
         self.assertEquals('D', cache.cache.get('D'))
 
+    def test_cache_doesnt_evict_item_being_added(self):
+        cache = simplecache.Cache(size=3, algorithm=simplecache.LFU())
+        cache.put('A', 'A')
+        cache.get('A')
+        cache.put('B', 'B')
+        cache.get('B')
+        cache.put('C', 'C')
+        cache.get('C')
+        # At this point, A,B and C have freq 2, When we put D, it has freq 1, but shouldn't
+        # be a valid node up for eviction
+        cache.put('D', 'D')
+        self.assertEquals(None, cache.cache.get('A')) #first
+        self.assertEquals('B', cache.cache.get('B'))
+        self.assertEquals('C', cache.cache.get('C'))
+        self.assertEquals('D', cache.cache.get('D'))
 
 if __name__ == "__main__":
     unittest.main()
